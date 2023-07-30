@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,6 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.chatgpt.components.ChatItem
+import com.example.chatgpt.models.ChatMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,13 +53,32 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .padding(it)
         ) {
-            Spacer(modifier = Modifier.weight(1f))
+            val sampleChatMessages = listOf(
+                ChatMessage("Hello!", "You"),
+                ChatMessage("Hi there!", "CHATGPT"),
+                ChatMessage("How are you?", "You"),
+                ChatMessage("I'm doing great!", "CHATGPT"),
+                ChatMessage("That's awesome!", "You"),
+                ChatMessage("Thanks!", "CHATGPT"),
+                ChatMessage("You're welcome!", "You"),
+                ChatMessage("Goodbye!", "You"),
+            )
+
+            LazyColumn(modifier = Modifier.weight(1f)){
+                items(sampleChatMessages){
+                    ChatItem(chatMessage = it)
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+            }
 
             var prompt by remember {
                 mutableStateOf("")
             }
 
-            Row(Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)) {
                 OutlinedTextField(
                     value = prompt,
                     onValueChange = {
@@ -82,7 +106,11 @@ fun HomeScreen() {
                         .padding(8.dp)
                         .align(Alignment.Bottom)
                         .padding(bottom = 4.dp, end = 8.dp)
-                        .background(color = if (prompt=="") MaterialTheme.colorScheme.background.copy(alpha = 0.4f) else MaterialTheme.colorScheme.primary,shape = CircleShape)
+                        .background(
+                            color = if (prompt == "") MaterialTheme.colorScheme.background.copy(
+                                alpha = 0.4f
+                            ) else MaterialTheme.colorScheme.primary, shape = CircleShape
+                        )
                 ) {
                     Icon(
                         Icons.Default.Send,
