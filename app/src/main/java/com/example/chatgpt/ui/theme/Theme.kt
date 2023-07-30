@@ -16,9 +16,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = primaryBlue,
+    secondary = secondaryBlue,
+    tertiary = tertiaryBlue,
+    onBackground = backGroundDark
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -41,7 +42,7 @@ private val LightColorScheme = lightColorScheme(
 fun ChatGPTTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
