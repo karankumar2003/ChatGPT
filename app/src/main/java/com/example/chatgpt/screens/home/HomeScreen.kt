@@ -1,5 +1,6 @@
-package com.example.chatgpt.screens
+package com.example.chatgpt.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -33,12 +33,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatgpt.components.ChatItem
 import com.example.chatgpt.models.ChatMessage
+import com.example.chatgpt.models.Message
+import com.example.chatgpt.models.RequestBody
+import com.example.chatgpt.util.Constants.YOU
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -53,19 +59,14 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .padding(it)
         ) {
-            val sampleChatMessages = listOf(
-                ChatMessage("Hello!", "You"),
-                ChatMessage("Hi there!", "CHATGPT"),
-                ChatMessage("How are you?", "You"),
-                ChatMessage("I'm doing great!", "CHATGPT"),
-                ChatMessage("That's awesome!", "You"),
-                ChatMessage("Thanks!", "CHATGPT"),
-                ChatMessage("You're welcome!", "You"),
-                ChatMessage("Goodbye!", "You"),
-            )
 
-            LazyColumn(modifier = Modifier.weight(1f)){
-                items(sampleChatMessages){
+
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp)
+            ) {
+                items(homeScreenViewModel.messageList) {
                     ChatItem(chatMessage = it)
                     Spacer(modifier = Modifier.height(10.dp))
                 }
@@ -78,7 +79,8 @@ fun HomeScreen() {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)) {
+                    .padding(vertical = 8.dp)
+            ) {
                 OutlinedTextField(
                     value = prompt,
                     onValueChange = {
@@ -100,6 +102,12 @@ fun HomeScreen() {
 
                 IconButton(
                     onClick = {
+                        val message = ChatMessage(prompt, YOU)
+                        homeScreenViewModel.addMessage(message)
+                        Log.d("HomeScreenViewModel", "HomeScreen: ${homeScreenViewModel.messageList.size}")
+
+                        val requestBody = RequestBody("gpt-3.5-turbo", listOf(Message("user",prompt)))
+                        homeScreenViewModel.sendPrompt(requestBody)
                         prompt = ""
                     },
                     modifier = Modifier
@@ -107,7 +115,7 @@ fun HomeScreen() {
                         .align(Alignment.Bottom)
                         .padding(bottom = 4.dp, end = 8.dp)
                         .background(
-                            color = if (prompt == "") MaterialTheme.colorScheme.background.copy(
+                            color = if (prompt == "") MaterialTheme.colorScheme.onBackground.copy(
                                 alpha = 0.4f
                             ) else MaterialTheme.colorScheme.primary, shape = CircleShape
                         )
@@ -115,7 +123,9 @@ fun HomeScreen() {
                     Icon(
                         Icons.Default.Send,
                         contentDescription = "Send",
-                        tint = if (prompt == "") MaterialTheme.colorScheme.background.copy(alpha = 0.4f) else MaterialTheme.colorScheme.onPrimary
+                        tint = if (prompt == "") MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                            alpha = 0.4f
+                        ) else MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
