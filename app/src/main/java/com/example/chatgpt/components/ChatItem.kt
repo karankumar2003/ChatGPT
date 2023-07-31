@@ -23,29 +23,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.example.chatgpt.models.ChatMessage
+import com.example.chatgpt.util.Constants.CHATGPT
+import com.example.chatgpt.util.Constants.YOU
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatItem(chatMessage: ChatMessage, modifier: Modifier = Modifier) {
 
-    val alignment = if (chatMessage.sentBy == "You") {
+    val alignment = if (chatMessage.sentBy == YOU) {
         Alignment.CenterEnd
     } else {
         Alignment.CenterStart
     }
 
-    val color = if (chatMessage.sentBy == "You") {
+    val color = if (chatMessage.sentBy == YOU) {
         MaterialTheme.colorScheme.secondary
     } else {
         MaterialTheme.colorScheme.onBackground
     }
 
-    val leftPadding = if(chatMessage.sentBy == "You"){
+    val leftPadding = if(chatMessage.sentBy == YOU){
         100.dp
     }else{
         0.dp
     }
-    val rightPadding = if(chatMessage.sentBy == "You"){
+    val rightPadding = if(chatMessage.sentBy == YOU){
         0.dp
     }else{
         100.dp
@@ -85,5 +87,5 @@ fun ChatItem(chatMessage: ChatMessage, modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun ChatItemPrev() {
-    ChatItem(ChatMessage("Hello, This is a ChatGPT android app!", "CHATGPT"))
+    ChatItem(ChatMessage("Hello there! \uD83D\uDC4B How may I assist you today?", CHATGPT))
 }

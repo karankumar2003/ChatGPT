@@ -100,6 +100,10 @@ fun HomeScreen(
                     )
                 )
 
+                val sendEnabled by remember(prompt){
+                    mutableStateOf(prompt.trim()!= "")
+                }
+
                 IconButton(
                     onClick = {
                         val message = ChatMessage(prompt, YOU)
@@ -110,12 +114,13 @@ fun HomeScreen(
                         homeScreenViewModel.sendPrompt(requestBody)
                         prompt = ""
                     },
+                    enabled = sendEnabled,
                     modifier = Modifier
                         .padding(8.dp)
                         .align(Alignment.Bottom)
                         .padding(bottom = 4.dp, end = 8.dp)
                         .background(
-                            color = if (prompt == "") MaterialTheme.colorScheme.onBackground.copy(
+                            color = if (!sendEnabled) MaterialTheme.colorScheme.onBackground.copy(
                                 alpha = 0.4f
                             ) else MaterialTheme.colorScheme.primary, shape = CircleShape
                         )
@@ -123,7 +128,7 @@ fun HomeScreen(
                     Icon(
                         Icons.Default.Send,
                         contentDescription = "Send",
-                        tint = if (prompt == "") MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                        tint = if (!sendEnabled) MaterialTheme.colorScheme.onSecondaryContainer.copy(
                             alpha = 0.4f
                         ) else MaterialTheme.colorScheme.onPrimary
                     )
